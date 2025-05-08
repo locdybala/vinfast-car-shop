@@ -47,9 +47,9 @@
             margin-right: 5px;
         }
         .main-header .search-bar {
-            background: #fff;
+            background: #fff0f5;
             border-radius: 30px;
-            box-shadow: 0 6px 16px 0 #d03ec74d;
+            box-shadow: none;
             display: flex;
             align-items: center;
             margin: 0 auto;
@@ -151,6 +151,21 @@
             .banner-title { font-size: 1.5rem; }
             .banner-sub { font-size: 1.1rem; }
         }
+        @media (max-width: 991.98px) {
+            .main-header .main-menu { display: none; }
+            .main-header .hamburger { display: block; }
+            .banner-section { display: none !important; }
+            .main-header .main-menu.show { display: block; background: #222; padding: 16px 0; }
+            .main-header .main-menu .nav { flex-direction: column; align-items: flex-start; }
+            .main-header .main-menu .nav-link { margin: 8px 0; font-size: 1.15rem; }
+            .header-logo { display: none !important; }
+            .mobile-hide { display: none !important; }
+            .header-actions .btn, .header-actions a { font-size: 0 !important; }
+            .header-actions .fa-user, .header-actions .fa-shopping-cart { font-size: 20px !important; }
+        }
+        @media (min-width: 992px) {
+            .main-header .hamburger { display: none; }
+        }
     </style>
     @stack('styles')
 </head>
@@ -159,33 +174,35 @@
     <header class="main-header shadow-sm pb-2">
         <div class="container pt-3">
             <div class="d-flex align-items-center justify-content-between flex-wrap">
-                <div>
+                <div class="header-logo">
                     <div class="logo">Nam Anh</div>
                     <span class="logo-auto">Auto</span>
                 </div>
+                <button class="hamburger" onclick="toggleMenu()"><i class="fas fa-bars"></i></button>
                 <div class="header-actions d-flex align-items-center">
                     @if(auth('customer')->check())
-                        <span class="text-white me-2"><i class="fas fa-user"></i> {{ auth('customer')->user()->name }}</span>
-                        <form action="{{ route('customer.logout') }}" method="POST" class="d-inline">
+                        <span class="text-white me-2"><i class="fas fa-user"></i></span>
+                        <form action="{{ route('customer.logout') }}" method="POST" class="d-inline mobile-hide">
                             @csrf
                             <button type="submit" class="btn btn-link text-white" style="text-decoration:none;">Đăng xuất</button>
                         </form>
                     @else
-                        <a href="{{ route('customer.login') }}"><i class="fas fa-user"></i> Đăng nhập</a>
-                        <a href="{{ route('customer.register') }}"><i class="fas fa-user-plus"></i> Đăng kí</a>
+                        <a href="{{ route('customer.login') }}" class="d-inline-block"><i class="fas fa-user"></i></a>
+                        <a href="{{ route('customer.register') }}" class="mobile-hide"><i class="fas fa-user-plus"></i> Đăng kí</a>
                     @endif
-                    <a href="{{ route('contact') }}"><i class="fas fa-phone"></i> Liên hệ</a>
+                    <a href="{{ route('contact') }}" class="mobile-hide"><i class="fas fa-phone"></i> Liên hệ</a>
+                    <a href="{{ auth('customer')->check() ? route('cart.index') : route('login') }}" class="d-inline-block ms-2"><i class="fas fa-shopping-cart"></i></a>
                 </div>
             </div>
             <div class="row justify-content-center mt-3">
                 <div class="col-12 col-md-10 col-lg-8">
                     <form class="search-bar" action="#">
                         <input type="text" class="form-control shadow-none" placeholder="Tìm kiếm">
-                        <button class="btn btn-search" type="submit">Tìm kiếm</button>
+                        <button class="btn btn-search" type="submit"><i class="fas fa-search"></i></button>
                     </form>
                 </div>
             </div>
-            <nav class="main-menu mt-3">
+            <nav class="main-menu mt-3" id="mainMenu">
                 <ul class="nav justify-content-center">
                     <li class="nav-item"><a class="nav-link @if(request()->routeIs('home')) active @endif" href="{{ route('home') }}">Trang chủ</a></li>
                     <li class="nav-item dropdown">
@@ -244,6 +261,12 @@
         </div>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    function toggleMenu() {
+        var menu = document.getElementById('mainMenu');
+        menu.classList.toggle('show');
+    }
+    </script>
     @stack('scripts')
 </body>
 </html> 
