@@ -39,6 +39,7 @@
                 <thead>
                     <tr>
                         <th>ID</th>
+                        <th>Hình ảnh</th>
                         <th>Tên danh mục</th>
                         <th>Mô tả</th>
                         <th>Ngày tạo</th>
@@ -49,16 +50,26 @@
                     @forelse($categories as $category)
                         <tr>
                             <td>{{ $category->id }}</td>
+                            <td>
+                                @if($category->image)
+                                    <img src="{{ asset('storage/' . $category->image) }}"
+                                         alt="{{ $category->name }}"
+                                         class="img-thumbnail"
+                                         style="max-height: 50px;">
+                                @else
+                                    <span class="text-muted">Không có ảnh</span>
+                                @endif
+                            </td>
                             <td>{{ $category->name }}</td>
                             <td>{{ Str::limit($category->description, 50) }}</td>
                             <td>{{ $category->created_at->format('d/m/Y H:i') }}</td>
                             <td>
-                                <a href="{{ route('admin.categories.edit', $category) }}" 
+                                <a href="{{ route('admin.categories.edit', $category) }}"
                                    class="btn btn-sm btn-info">
                                     <i class="fas fa-edit"></i>
                                 </a>
-                                <form action="{{ route('admin.categories.destroy', $category) }}" 
-                                      method="POST" 
+                                <form action="{{ route('admin.categories.destroy', $category) }}"
+                                      method="POST"
                                       class="d-inline"
                                       onsubmit="return confirm('Bạn có chắc chắn muốn xóa danh mục này?')">
                                     @csrf
@@ -71,7 +82,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="text-center">Không có danh mục nào.</td>
+                            <td colspan="6" class="text-center">Không có danh mục nào.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -80,8 +91,10 @@
 
         <!-- Pagination -->
         <div class="mt-4">
-            {{ $categories->links() }}
+            @if($categories instanceof \Illuminate\Pagination\LengthAwarePaginator)
+                {{ $categories->links() }}
+            @endif
         </div>
     </div>
 </div>
-@endsection 
+@endsection

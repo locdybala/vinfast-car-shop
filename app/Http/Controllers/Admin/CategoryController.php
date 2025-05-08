@@ -6,16 +6,29 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Storage;
 
 class CategoryController extends Controller
 {
+    public function __construct()
+    {
+        Paginator::useBootstrap();
+    }
+
     public function index(Request $request)
     {
         $search = $request->input('search');
-        $categories = Category::when($search, function($query) use ($search) {
-            $query->where('name', 'like', "%{$search}%")
+        $query = Category::query();
+
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
                   ->orWhere('description', 'like', "%{$search}%");
-        })->latest()->paginate(10);
+            });
+        }
+
+        $categories = $query->orderBy('created_at', 'desc')->paginate(10);
 
         return view('admin.categories.index', compact('categories', 'search'));
     }
@@ -30,13 +43,23 @@ class CategoryController extends Controller
         $request->validate([
             'name' => 'required|string|max:255|unique:categories',
             'description' => 'required|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
-        Category::create([
+        $data = [
             'name' => $request->name,
             'slug' => Str::slug($request->name),
             'description' => $request->description,
-        ]);
+        ];
+
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $image->storeAs('public/categories', $imageName);
+            $data['image'] = 'categories/' . $imageName;
+        }
+
+        Category::create($data);
 
         return redirect()->route('admin.categories.index')
             ->with('success', 'Danh mục đã được tạo thành công.');
@@ -52,13 +75,28 @@ class CategoryController extends Controller
         $request->validate([
             'name' => 'required|string|max:255|unique:categories,name,' . $category->id,
             'description' => 'required|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
-        $category->update([
+        $data = [
             'name' => $request->name,
             'slug' => Str::slug($request->name),
             'description' => $request->description,
-        ]);
+        ];
+
+        if ($request->hasFile('image')) {
+            // Xóa ảnh cũ nếu có
+            if ($category->image) {
+                Storage::delete('public/' . $category->image);
+            }
+
+            $image = $request->file('image');
+            $imageName = time() . '.' . $image->getClientOriginalExtension();
+            $image->storeAs('public/categories', $imageName);
+            $data['image'] = 'categories/' . $imageName;
+        }
+
+        $category->update($data);
 
         return redirect()->route('admin.categories.index')
             ->with('success', 'Danh mục đã được cập nhật thành công.');
@@ -74,4 +112,4 @@ class CategoryController extends Controller
         return redirect()->route('admin.categories.index')
             ->with('success', 'Danh mục đã được xóa thành công.');
     }
-} 
+}

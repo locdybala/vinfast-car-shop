@@ -29,6 +29,7 @@ class CartController extends Controller
             'quantity' => $request->qty,
             'attributes' => [
                 'image' => $product->image,
+                'color' => $product->color,
             ],
         ]);
         return redirect()->route('cart.index')->with('success', 'Đã thêm vào giỏ hàng!');
@@ -57,4 +58,4 @@ class CartController extends Controller
         Cart::remove($request->id);
         return back()->with('success', 'Đã xóa sản phẩm khỏi giỏ hàng!');
     }
-} 
+}

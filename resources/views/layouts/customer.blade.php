@@ -211,7 +211,7 @@
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                             @foreach($categories as $cat)
-                                <li><a class="dropdown-item" href="{{ route('shop.index', ['category_id' => $cat->id]) }}">{{ $cat->name }}</a></li>
+                                <li><a class="dropdown-item" href="{{ route('shop.show', $cat->id) }}">{{ $cat->name }}</a></li>
                             @endforeach
                         </ul>
                     </li>
@@ -269,4 +269,4 @@
     </script>
     @stack('scripts')
 </body>
-</html> 
+</html>

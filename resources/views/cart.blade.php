@@ -28,6 +28,9 @@
                     <td class="d-flex align-items-center gap-2" style="min-width:180px;">
                         <img src="{{ asset('storage/' . $item->attributes->image) }}" alt="{{ $item->name }}" style="width:60px;height:40px;object-fit:cover;">
                         <span class="fw-bold">{{ $item->name }}</span>
+                        @if(isset($item->attributes->color))
+                            <span class="color-dot ms-2" style="background:{{ $item->attributes->color }}"></span>
+                        @endif
                     </td>
                     <td class="fw-bold" style="font-size:20px;">{{ number_format($item->price,0,',','.') }}đ</td>
                     <td style="width:120px;">
@@ -64,5 +67,6 @@
     .table th, .table td { vertical-align: middle !important; }
     .table input[type=number]::-webkit-inner-spin-button,
     .table input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+    .color-dot { width: 24px; height: 24px; border-radius: 50%; display: inline-block; border: 2px solid #eee; }
 </style>
-@endpush 
+@endpush

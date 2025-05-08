@@ -15,6 +15,7 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->text('description');
             $table->decimal('price', 12, 2);
+            $table->string('color')->nullable()->comment('Màu sắc của sản phẩm');
             $table->integer('stock')->default(0);
             $table->string('image')->nullable();
             $table->boolean('is_featured')->default(false);
@@ -27,4 +28,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('products');
     }
-}; 
+};

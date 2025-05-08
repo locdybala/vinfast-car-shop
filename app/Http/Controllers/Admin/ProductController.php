@@ -15,7 +15,7 @@ class ProductController extends Controller
     {
         $search = $request->input('search');
         $category_id = $request->input('category_id');
-        
+
         $products = Product::with('category')
             ->when($search, function($query) use ($search) {
                 $query->where('name', 'like', "%{$search}%")
@@ -28,7 +28,7 @@ class ProductController extends Controller
             ->paginate(10);
 
         $categories = Category::all();
-        
+
         return view('admin.products.index', compact('products', 'categories', 'search', 'category_id'));
     }
 
@@ -41,18 +41,28 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'category_id' => 'required|exists:categories,id',
             'name' => 'required|string|max:255|unique:products',
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'is_featured' => 'boolean',
-            'status' => 'boolean',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'category_id' => 'required|exists:categories,id',
+            'color' => 'required|string|regex:/^#[0-9A-F]{6}$/i',
+            'is_featured' => 'nullable|boolean',
+            'status' => 'nullable|boolean',
         ]);
 
-        $data = $request->all();
-        $data['slug'] = Str::slug($request->name);
+        $data = [
+            'name' => $request->name,
+            'slug' => Str::slug($request->name),
+            'description' => $request->description,
+            'price' => $request->price,
+            'stock' => $request->stock,
+            'category_id' => $request->category_id,
+            'color' => $request->color,
+            'is_featured' => $request->has('is_featured') ? 1 : 0,
+            'status' => $request->has('status') ? 1 : 0,
+        ];
 
         if ($request->hasFile('image')) {
             $image = $request->file('image');
@@ -76,21 +86,31 @@ class ProductController extends Controller
     public function update(Request $request, Product $product)
     {
         $request->validate([
-            'category_id' => 'required|exists:categories,id',
             'name' => 'required|string|max:255|unique:products,name,' . $product->id,
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'is_featured' => 'boolean',
-            'status' => 'boolean',
+            'category_id' => 'required|exists:categories,id',
+            'color' => 'required|string|regex:/^#[0-9A-F]{6}$/i',
+            'is_featured' => 'nullable|boolean',
+            'status' => 'nullable|boolean',
         ]);
 
-        $data = $request->all();
-        $data['slug'] = Str::slug($request->name);
+        $data = [
+            'name' => $request->name,
+            'slug' => Str::slug($request->name),
+            'description' => $request->description,
+            'price' => $request->price,
+            'stock' => $request->stock,
+            'category_id' => $request->category_id,
+            'color' => $request->color,
+            'is_featured' => $request->has('is_featured') ? 1 : 0,
+            'status' => $request->has('status') ? 1 : 0,
+        ];
 
         if ($request->hasFile('image')) {
-            // Delete old image
+            // Xóa ảnh cũ nếu có
             if ($product->image) {
                 Storage::delete('public/' . $product->image);
             }
@@ -118,4 +138,4 @@ class ProductController extends Controller
         return redirect()->route('admin.products.index')
             ->with('success', 'Sản phẩm đã được xóa thành công.');
     }
-} 
+}
