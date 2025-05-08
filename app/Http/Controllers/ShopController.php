@@ -9,13 +9,33 @@ class ShopController extends Controller
 {
     public function index(Request $request)
     {
-        $products = Product::query()
-            ->select(['id', 'name', 'image', 'price'])
-            ->orderByDesc('id')
-            ->paginate(6);
-        foreach ($products as $product) {
-            $product->colors = ['#222', '#d03ec7', '#f00'];
+        $query = Product::query()->select(['id', 'name', 'image', 'price', 'color']);
+        // Tìm kiếm theo tên
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
         }
+        // Lọc theo giá
+        if ($request->filled('price_min')) {
+            $query->where('price', '>=', $request->price_min);
+        }
+        if ($request->filled('price_max')) {
+            $query->where('price', '<=', $request->price_max);
+        }
+        // Lọc theo màu sắc
+        if ($request->filled('color')) {
+            $colors = $request->color;
+            $query->whereIn('color', $colors);
+        }
+        // Sắp xếp
+        $sort = $request->get('sort', 'new');
+        if ($sort === 'price_asc') {
+            $query->orderBy('price', 'asc');
+        } elseif ($sort === 'price_desc') {
+            $query->orderBy('price', 'desc');
+        } else {
+            $query->orderByDesc('id');
+        }
+        $products = $query->paginate(6)->withQueryString();
         return view('shop', compact('products'));
     }
 

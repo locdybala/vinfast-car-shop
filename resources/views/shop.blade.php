@@ -10,81 +10,41 @@
 <div class="container">
     <div class="row">
         <!-- Sidebar Filter -->
-        <div class="col-lg-3 mb-4">
+        <form method="GET" class="col-lg-3 mb-4" id="filterForm">
             <div class="card p-3 mb-3 shop-sidebar">
-                <h6 class="mb-2" style="font-weight:500;font-size:15px;">Keywords</h6>
-                <div class="mb-2 d-flex flex-wrap">
-                    <span class="badge">Spring <span>&times;</span></span>
-                    <span class="badge">Smart <span>&times;</span></span>
-                    <span class="badge">Modern <span>&times;</span></span>
+                <h6 class="mb-2" style="font-weight:500;font-size:15px;">Tìm kiếm</h6>
+                <div class="mb-3">
+                    <input type="text" name="search" class="form-control form-control-sm" placeholder="Tìm theo tên sản phẩm" style="border-radius:16px;" value="{{ request('search') }}">
                 </div>
                 <div class="mb-3">
-                    <input type="text" class="form-control form-control-sm" placeholder="Search" style="border-radius:16px;">
+                    <label class="form-label">Giá từ</label>
+                    <input type="number" name="price_min" class="form-control form-control-sm mb-2" placeholder="Tối thiểu" value="{{ request('price_min') }}">
+                    <label class="form-label">đến</label>
+                    <input type="number" name="price_max" class="form-control form-control-sm" placeholder="Tối đa" value="{{ request('price_max') }}">
                 </div>
                 <div class="mb-3">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" checked>
-                        <label class="form-check-label">Label</label>
-                        <span class="desc">Description</span>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" checked>
-                        <label class="form-check-label">Label</label>
-                        <span class="desc">Description</span>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" checked>
-                        <label class="form-check-label">Label</label>
-                        <span class="desc">Description</span>
-                    </div>
+                    <label class="form-label">Màu sắc</label>
+                    @php $colors = \App\Models\Product::query()->distinct()->pluck('color')->filter()->unique(); @endphp
+                    @foreach($colors as $color)
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" name="color[]" value="{{ $color }}" id="color_{{ $loop->index }}" {{ collect(request('color'))->contains($color) ? 'checked' : '' }}>
+                            <label class="form-check-label" for="color_{{ $loop->index }}">{{ $color }}</label>
+                        </div>
+                    @endforeach
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">Label <span class="price-range-labels" style="float:right;">Vnd0-2.000.000.000</span></label>
-                    <input type="range" class="form-range" min="0" max="2000000000" value="0">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Color</label>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" checked>
-                        <label class="form-check-label">Label</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" checked>
-                        <label class="form-check-label">Label</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" checked>
-                        <label class="form-check-label">Label</label>
-                    </div>
-                </div>
-                <div class="mb-3">
-                    <label class="form-label">Size</label>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" checked>
-                        <label class="form-check-label">Label</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" checked>
-                        <label class="form-check-label">Label</label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" checked>
-                        <label class="form-check-label">Label</label>
-                    </div>
-                </div>
+                <button type="submit" class="btn btn-primary btn-sm w-100">Lọc</button>
             </div>
-        </div>
+        </form>
         <!-- Product List -->
         <div class="col-lg-9">
             <div class="d-flex flex-wrap align-items-center justify-content-between mb-3 gap-2 shop-filter-bar">
-                <form class="flex-grow-1 me-2" style="max-width:300px;">
-                    <input type="text" class="form-control form-control-sm" style="border-radius: 16px;" placeholder="Search">
+                <form method="GET" class="flex-grow-1 me-2" style="max-width:300px;">
+                    <input type="text" name="search" class="form-control form-control-sm" style="border-radius: 16px;" placeholder="Tìm kiếm" value="{{ request('search') }}">
                 </form>
                 <div class="btn-group me-2">
-                    <button class="btn btn-dark btn-sm active">New</button>
-                    <button class="btn btn-outline-dark btn-sm">Price ascending</button>
-                    <button class="btn btn-outline-dark btn-sm">Price descending</button>
-                    <button class="btn btn-outline-dark btn-sm">Rating</button>
+                    <button type="submit" form="filterForm" name="sort" value="new" class="btn btn-dark btn-sm {{ request('sort', 'new') == 'new' ? 'active' : '' }}">Mới nhất</button>
+                    <button type="submit" form="filterForm" name="sort" value="price_asc" class="btn btn-outline-dark btn-sm {{ request('sort') == 'price_asc' ? 'active' : '' }}">Giá tăng dần</button>
+                    <button type="submit" form="filterForm" name="sort" value="price_desc" class="btn btn-outline-dark btn-sm {{ request('sort') == 'price_desc' ? 'active' : '' }}">Giá giảm dần</button>
                 </div>
             </div>
             <div class="row g-4">
@@ -112,4 +72,4 @@
         </div>
     </div>
 </div>
-@endsection 
+@endsection

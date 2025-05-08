@@ -23,7 +23,7 @@
                         <span class="badge badge-new">NEW</span>
                     </div>
                     <a href="#">
-                        <img src="{{ asset('storage/' . $category->image) }}" class="card-img-top" alt="{{ $category->name }}" style="height:305px;object-fit:cover;width:100%;">
+                        <img src="{{ asset('storage/' . $category->image) }}" class="card-img-top" alt="{{ $category->name }}" style="height:305px;width:100%;">
                     </a>
                     <div class="card-body">
                         <div class="mb-2">
