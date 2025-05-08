@@ -3,31 +3,14 @@
 @section('title', 'Giỏ hàng')
 
 @section('content')
-@php
-// Demo: Dữ liệu mẫu, sau này sẽ lấy từ session
-$cart = [
-    [
-        'id' => 1,
-        'name' => 'VF3',
-        'image' => 'products/vf3.jpg',
-        'price' => 299000000,
-        'qty' => 1,
-    ],
-    [
-        'id' => 2,
-        'name' => 'VF5',
-        'image' => 'products/vf5.jpg',
-        'price' => 529000000,
-        'qty' => 2,
-    ],
-];
-$total = 0;
-foreach ($cart as $item) {
-    $total += $item['price'] * $item['qty'];
-}
-@endphp
 <div class="container py-4">
     <h2 class="fw-bold mb-4">Giỏ hàng</h2>
+    @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+    @if($cart->isEmpty())
+        <div class="alert alert-info">Giỏ hàng của bạn đang trống.</div>
+    @else
     <div class="table-responsive">
         <table class="table align-middle text-center" style="border:1px solid #ccc;">
             <thead class="bg-light" style="background:#ddd;">
@@ -43,16 +26,25 @@ foreach ($cart as $item) {
                 @foreach($cart as $item)
                 <tr style="border-top:2px solid #2196f3;">
                     <td class="d-flex align-items-center gap-2" style="min-width:180px;">
-                        <img src="{{ asset('storage/' . $item['image']) }}" alt="{{ $item['name'] }}" style="width:60px;height:40px;object-fit:cover;">
-                        <span class="fw-bold">{{ $item['name'] }}</span>
+                        <img src="{{ asset('storage/' . $item->attributes->image) }}" alt="{{ $item->name }}" style="width:60px;height:40px;object-fit:cover;">
+                        <span class="fw-bold">{{ $item->name }}</span>
                     </td>
-                    <td class="fw-bold" style="font-size:20px;">{{ number_format($item['price'],0,',','.') }}đ</td>
+                    <td class="fw-bold" style="font-size:20px;">{{ number_format($item->price,0,',','.') }}đ</td>
                     <td style="width:120px;">
-                        <input type="number" min="1" value="{{ $item['qty'] }}" class="form-control text-center" style="max-width:70px;display:inline-block;">
+                        <form action="{{ route('cart.update') }}" method="POST" class="d-inline">
+                            @csrf
+                            <input type="hidden" name="id" value="{{ $item->id }}">
+                            <input type="number" min="1" name="qty" value="{{ $item->quantity }}" class="form-control text-center d-inline" style="max-width:70px;display:inline-block;">
+                            <button type="submit" class="btn btn-sm btn-outline-primary ms-1">Cập nhật</button>
+                        </form>
                     </td>
-                    <td class="fw-bold" style="font-size:20px;">{{ number_format($item['price'] * $item['qty'],0,',','.') }}đ</td>
+                    <td class="fw-bold" style="font-size:20px;">{{ number_format($item->price * $item->quantity,0,',','.') }}đ</td>
                     <td>
-                        <button class="btn btn-link text-danger p-0" title="Xóa"><i class="fas fa-trash"></i></button>
+                        <form action="{{ route('cart.remove') }}" method="POST" class="d-inline">
+                            @csrf
+                            <input type="hidden" name="id" value="{{ $item->id }}">
+                            <button class="btn btn-link text-danger p-0" title="Xóa"><i class="fas fa-trash"></i></button>
+                        </form>
                     </td>
                 </tr>
                 @endforeach
@@ -61,8 +53,9 @@ foreach ($cart as $item) {
     </div>
     <div class="d-flex justify-content-between align-items-center mt-3">
         <div class="fs-5 fw-bold text-danger">Tổng tiền: <span style="font-size:22px;">{{ number_format($total,0,',','.') }}đ</span></div>
-        <a href="#" class="btn btn-primary px-4 py-2" style="font-size:18px;">Thanh toán</a>
+        <a href="{{ route('checkout.index') }}" class="btn btn-primary px-4 py-2" style="font-size:18px;">Thanh toán</a>
     </div>
+    @endif
 </div>
 @endsection
 

@@ -3,29 +3,6 @@
 @section('title', 'Thanh toán')
 
 @section('content')
-@php
-// Demo: Dữ liệu mẫu, sau này sẽ lấy từ session
-$cart = [
-    [
-        'id' => 1,
-        'name' => 'VF3',
-        'image' => 'products/vf3.jpg',
-        'price' => 299000000,
-        'qty' => 1,
-    ],
-    [
-        'id' => 2,
-        'name' => 'VF5',
-        'image' => 'products/vf5.jpg',
-        'price' => 529000000,
-        'qty' => 2,
-    ],
-];
-$total = 0;
-foreach ($cart as $item) {
-    $total += $item['price'] * $item['qty'];
-}
-@endphp
 <div class="container py-4">
     <h2 class="fw-bold mb-4">Thanh toán</h2>
     <div class="row g-4">
@@ -33,22 +10,23 @@ foreach ($cart as $item) {
             <div class="card shadow-sm">
                 <div class="card-body">
                     <h5 class="fw-bold mb-3">Thông tin khách hàng</h5>
-                    <form>
+                    <form action="{{ route('checkout.process') }}" method="POST">
+                        @csrf
                         <div class="mb-3">
                             <label class="form-label">Họ và tên</label>
-                            <input type="text" class="form-control" placeholder="Nhập họ tên" required>
+                            <input type="text" class="form-control" name="name" placeholder="Nhập họ tên" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Số điện thoại</label>
-                            <input type="tel" class="form-control" placeholder="Nhập số điện thoại" required>
+                            <input type="tel" class="form-control" name="phone" placeholder="Nhập số điện thoại" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Email</label>
-                            <input type="email" class="form-control" placeholder="Nhập email" required>
+                            <input type="email" class="form-control" name="email" placeholder="Nhập email" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Địa chỉ nhận xe</label>
-                            <textarea class="form-control" rows="2" placeholder="Nhập địa chỉ" required></textarea>
+                            <textarea class="form-control" name="address" rows="2" placeholder="Nhập địa chỉ" required></textarea>
                         </div>
                         <button type="submit" class="btn btn-success w-100 py-2 fw-bold">Xác nhận đặt hàng</button>
                     </form>
@@ -72,12 +50,12 @@ foreach ($cart as $item) {
                             @foreach($cart as $item)
                             <tr>
                                 <td class="d-flex align-items-center gap-2" style="min-width:140px;">
-                                    <img src="{{ asset('storage/' . $item['image']) }}" alt="{{ $item['name'] }}" style="width:40px;height:30px;object-fit:cover;">
-                                    <span>{{ $item['name'] }}</span>
+                                    <img src="{{ asset('storage/' . $item->attributes->image) }}" alt="{{ $item->name }}" style="width:40px;height:30px;object-fit:cover;">
+                                    <span>{{ $item->name }}</span>
                                 </td>
-                                <td>{{ number_format($item['price'],0,',','.') }}đ</td>
-                                <td>{{ $item['qty'] }}</td>
-                                <td>{{ number_format($item['price'] * $item['qty'],0,',','.') }}đ</td>
+                                <td>{{ number_format($item->price,0,',','.') }}đ</td>
+                                <td>{{ $item->quantity }}</td>
+                                <td>{{ number_format($item->price * $item->quantity,0,',','.') }}đ</td>
                             </tr>
                             @endforeach
                         </tbody>

@@ -6,19 +6,23 @@
 <div class="container py-4">
     <div class="row g-4 align-items-start">
         <div class="col-md-6 text-center">
-            <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="img-fluid rounded shadow" style="max-width: 400px;">
+            <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="img-fluid" style="max-width: 600px; height: auto; display: block; margin: 0 auto;">
         </div>
         <div class="col-md-6">
             <h2 class="fw-bold mb-2">{{ $product->name }}</h2>
-            <span class="badge bg-success mb-2">{{ $product->category->name ?? 'VinFast' }}</span>
+            <span class="badge bg-success mb-2" style="font-size:1.2rem;padding:10px 22px;">{{ $product->category->name ?? 'VinFast' }}</span>
             <div class="fs-4 fw-bold text-danger mb-3">VND {{ number_format($product->price, 0, ',', '.') }}</div>
-            <div class="mb-3">
-                <label class="form-label">Màu sắc:</label>
-                @foreach($product->colors as $color)
-                    <span class="d-inline-block rounded-circle border border-2 me-1" style="width:24px;height:24px;background:{{ $color }};"></span>
-                @endforeach
-            </div>
-            <button class="btn btn-dark w-100 mb-3" style="max-width: 300px;">Mua ngay</button>
+            
+            @if(auth('customer')->check())
+                <form action="{{ route('cart.add') }}" method="POST" class="mb-3">
+                    @csrf
+                    <input type="hidden" name="id" value="{{ $product->id }}">
+                    <input type="hidden" name="qty" value="1">
+                    <button type="submit" class="btn btn-dark w-100" style="max-width: 300px;">Mua ngay</button>
+                </form>
+            @else
+                <a href="{{ route('login') }}" class="btn btn-dark w-100 mb-3" style="max-width: 300px;">Mua ngay</a>
+            @endif
             <div class="card mt-3">
                 <div class="card-body">
                     <h5 class="card-title mb-2">Thông tin nhanh</h5>

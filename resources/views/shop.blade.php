@@ -91,12 +91,14 @@
                 @foreach($products as $product)
                 <div class="col-12 col-md-6 shop-product-col">
                     <div class="card h-100 product-hover-card position-relative overflow-hidden">
-                        <img src="{{ asset('storage/' . $product->image) }}" class="card-img-top" alt="{{ $product->name }}">
+                        <a href="{{ route('shop.show', $product->id) }}">
+                            <img src="{{ asset('storage/' . $product->image) }}" class="card-img-top" alt="{{ $product->name }}">
+                        </a>
                         <div class="card-body p-2">
-                            <h6 class="card-title" style="font-size: 25px;
-    font-weight: 1000 !important;">{{ $product->name }}</h6>
-                            <div style="font-size: 20px;
-    font-weight: 500 !important;" class="product-price">
+                            <h6 class="card-title" style="font-size: 25px; font-weight: 1000 !important;">
+                                <a href="{{ route('shop.show', $product->id) }}" class="text-dark text-decoration-none">{{ $product->name }}</a>
+                            </h6>
+                            <div style="font-size: 20px; font-weight: 500 !important;" class="product-price">
                                 {{ number_format($product->price,0,',','.') }} VND
                             </div>
                         </div>

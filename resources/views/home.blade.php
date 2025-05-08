@@ -21,14 +21,18 @@
                 <div class="position-absolute top-0 start-0 m-2">
                     <span class="badge badge-new">NEW</span>
                 </div>
-                <img src="{{ asset('storage/' . $product->image) }}" class="card-img-top" alt="{{ $product->name }}" style="height:305px;object-fit:cover;width:100%;">
+                <a href="{{ route('shop.show', $product->id) }}">
+                    <img src="{{ asset('storage/' . $product->image) }}" class="card-img-top" alt="{{ $product->name }}" style="height:305px;object-fit:cover;width:100%;">
+                </a>
                 <div class="card-body">
                     <div class="mb-2">
                         @foreach($product->colors as $color)
                             <span class="color-dot" style="background:{{ $color }}"></span>
                         @endforeach
                     </div>
-                    <h6 class="card-title mb-1">{{ $product->name }}</h6>
+                    <h6 class="card-title mb-1">
+                        <a href="{{ route('shop.show', $product->id) }}" class="text-dark text-decoration-none">{{ $product->name }}</a>
+                    </h6>
                     <div class="mb-1">
                         <span class="text-warning">
                             @for($i=0;$i<5;$i++)<i class="fas fa-star"></i>@endfor
@@ -40,7 +44,7 @@
                     </div>
                 </div>
                 <div class="product-overlay position-absolute top-0 start-0 w-100 h-100 d-flex flex-column justify-content-center align-items-center" style="display:none;">
-                    <a href="#" class="btn btn-buy-now">Mua ngay</a>
+                    <a href="{{ route('shop.show', $product->id) }}" class="btn btn-buy-now">Xem chi tiết</a>
                 </div>
             </div>
         </div>

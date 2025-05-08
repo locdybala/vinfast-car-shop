@@ -164,9 +164,17 @@
                     <span class="logo-auto">Auto</span>
                 </div>
                 <div class="header-actions d-flex align-items-center">
-                    <a href="#"><i class="fas fa-user"></i> Đăng nhập</a>
-                    <a href="#"><i class="fas fa-user-plus"></i> Đăng kí</a>
-                    <a href="#"><i class="fas fa-phone"></i> Liên hệ</a>
+                    @if(auth('customer')->check())
+                        <span class="text-white me-2"><i class="fas fa-user"></i> {{ auth('customer')->user()->name }}</span>
+                        <form action="{{ route('customer.logout') }}" method="POST" class="d-inline">
+                            @csrf
+                            <button type="submit" class="btn btn-link text-white" style="text-decoration:none;">Đăng xuất</button>
+                        </form>
+                    @else
+                        <a href="{{ route('customer.login') }}"><i class="fas fa-user"></i> Đăng nhập</a>
+                        <a href="{{ route('customer.register') }}"><i class="fas fa-user-plus"></i> Đăng kí</a>
+                    @endif
+                    <a href="{{ route('contact') }}"><i class="fas fa-phone"></i> Liên hệ</a>
                 </div>
             </div>
             <div class="row justify-content-center mt-3">
@@ -180,10 +188,25 @@
             <nav class="main-menu mt-3">
                 <ul class="nav justify-content-center">
                     <li class="nav-item"><a class="nav-link @if(request()->routeIs('home')) active @endif" href="{{ route('home') }}">Trang chủ</a></li>
-                    <li class="nav-item"><a class="nav-link @if(request()->routeIs('shop.index')) active @endif" href="{{ route('shop.index') }}">Sản phẩm</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Khuyến mại</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Chính sách đổi trả</a></li>
-                    <li class="nav-item"><a class="nav-link @if(request()->routeIs('cart.index')) active @endif" href="{{ route('cart.index') }}"><i class="fas fa-shopping-cart"></i> Giỏ hàng</a></li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle @if(request()->routeIs('shop.index')) active @endif" href="{{ route('shop.index') }}" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" onclick="window.location='{{ route('shop.index') }}'">
+                            Sản phẩm
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            @foreach($categories as $cat)
+                                <li><a class="dropdown-item" href="{{ route('shop.index', ['category_id' => $cat->id]) }}">{{ $cat->name }}</a></li>
+                            @endforeach
+                        </ul>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="{{ route('promotions') }}">Khuyến mại</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ route('return.policy') }}">Chính sách đổi trả</a></li>
+                    <li class="nav-item">
+                        @if(auth('customer')->check())
+                            <a class="nav-link @if(request()->routeIs('cart.index')) active @endif" href="{{ route('cart.index') }}"><i class="fas fa-shopping-cart"></i> Giỏ hàng</a>
+                        @else
+                            <a class="nav-link" href="{{ route('login') }}"><i class="fas fa-shopping-cart"></i> Giỏ hàng</a>
+                        @endif
+                    </li>
                 </ul>
             </nav>
         </div>
