@@ -248,14 +248,22 @@
         @yield('content')
     </main>
     <!-- Footer -->
-    <footer class="footer mt-5">
+    <footer class="footer mt-5" style="border-top:1px solid #eee; padding-top:24px;">
         <div class="container">
-            <div class="row">
-                <div class="col-12 col-md-8">
-                    <strong>Đại Lý VinFast NAM ANH AUTO</strong><br>
-                    Địa Chỉ: Số 8 Đường Phạm Hùng, P. Mai Dịch, Q. Cầu Giấy, Hà Nội<br>
-                    Email: hoangdinhthylh@gmail.com<br>
-                    Hotline: <a href="tel:0348888937">0348 888 937</a>
+            <div class="row justify-content-center align-items-start">
+                <div class="col-12  mb-4 text-md-start text-center d-flex align-items-center" style="gap:20px;">
+                    <a href="https://twitter.com/" target="_blank" style="color:#222;font-size:22px;"><i class="fab fa-x-twitter"></i></a>
+                    <a href="https://instagram.com/" target="_blank" style="color:#222;font-size:22px;"><i class="fab fa-instagram"></i></a>
+                    <a href="https://youtube.com/" target="_blank" style="color:#222;font-size:22px;"><i class="fab fa-youtube"></i></a>
+                    <a href="https://linkedin.com/" target="_blank" style="color:#222;font-size:22px;"><i class="fab fa-linkedin"></i></a>
+                </div>
+                <div class="col-12 text-center">
+                    <div style="font-weight:600;">VINFAST TIỀN GIANG</div>
+                    Đại lý ủy quyền chính hãng VinFast Việt Nam<br>
+                    Km1954 Quốc lộ 1A, Ấp Long Thành, Xã Long An, Huyện Châu Thành, Tỉnh Tiền Giang<br>
+                    HỖ TRỢ KHÁCH HÀNG<br>
+                    Hotline: <a href="tel:0939382384">0939 382 384</a><br>
+                    Email: pharmavilen85@gmail.com
                 </div>
             </div>
         </div>
